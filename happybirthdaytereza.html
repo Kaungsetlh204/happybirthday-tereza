@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Happy Birthday, Tereza ❤️</title>
+<meta name="theme-color" content="#1f7a55" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<style>
+:root{
+  --bg:#e8f7ef;
+  --card:#ffffff;
+  --accent:#1f7a55;
+  --accent-2:#cce9dc;
+  --ink:#243229;
+  --muted:#5e6b63;
+  --shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+html,body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+}
+
+.wrap{
+  max-width:720px;
+  margin:0 auto;
+  padding:28px 16px 60px;
+}
+
+header{text-align:center;padding:10px 0 6px;}
+
+.pill{
+  display:inline-block;
+  padding:8px 14px;
+  background:var(--accent-2);
+  color:#0f4d37;
+  border-radius:999px;
+  font-weight:700;
+}
+
+h1{
+  font-size:clamp(28px,6vw,42px);
+  margin:12px 0 8px;
+}
+
+.sub{
+  color:var(--muted);
+  margin:0 0 16px;
+  font-size:14px;
+}
+
+.card{
+  background:var(--card);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.hero{
+  padding:28px 22px 24px;
+  background: radial-gradient(1000px 360px at 50% -220px, #e6f4ec 0, transparent 60%);
+}
+
+.message{
+  max-width:620px;
+  margin:0 auto;
+  line-height:1.7;
+  font-size:clamp(16px,2.8vw,18px);
+}
+
+.sig{
+  text-align:right;
+  margin-top:16px;
+  color:#0f4d37;
+  font-style:italic;
+}
+
+.cta-row{
+  display:flex;
+  justify-content:center;
+  margin-top:18px;
+}
+
+button{
+  border:0;
+  border-radius:12px;
+  padding:14px 18px;
+  font-weight:700;
+  cursor:pointer;
+  background:var(--accent);
+  color:white;
+  font-size:16px;
+}
+
+button:active{
+  transform:scale(0.97);
+}
+
+footer{
+  text-align:center;
+  padding:18px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* Confetti */
+canvas#confetti{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="wrap">
+<header>
+<span class="pill">🎉 Happy Birthday, Tereza ❤️</span>
+<h1>For Tereza 💐</h1>
+<p class="sub">A little message for you.</p>
+</header>
+
+<section class="card hero">
+<div class="message">
+Happy Birthday, Tereza ❤️! I’m really happy we crossed paths, getting to know you has been genuinely great.
+I know we haven’t known each other long, but I really enjoy every time we meet.
+Wishing you a lovely day filled with everything (and everyone) you like.
+I’m looking forward to seeing you again soon.
+</div>
+
+<div class="sig">— K.S.</div>
+
+<div class="cta-row">
+<button id="confettiBtn">Play Confetti 🎊</button>
+</div>
+</section>
+
+<footer>
+Made with a smile • <span id="today"></span>
+</footer>
+</div>
+
+<script>
+document.getElementById('today').textContent =
+new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+
+let W,H,confetti=[],rafId;
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function createConfetti(n=150){   // slightly reduced for mobile smoothness
+  confetti=[];
+  const colors=['#1f7a55','#2bb673','#a3d9c6','#ffd166','#ef476f','#118ab2','#06d6a0'];
+
+  for(let i=0;i<n;i++){
+    confetti.push({
+      x:Math.random()*W,
+      y:Math.random()*-H,
+      r:Math.random()*6+3,
+      c:colors[Math.floor(Math.random()*colors.length)],
+      s:Math.random()*2+1,
+      a:Math.random()*360
+    });
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+
+  confetti.forEach(p=>{
+    p.y+=p.s*2;
+    p.x+=Math.sin((p.y+p.a)/25);
+    p.a+=2;
+
+    if(p.y>H+20){
+      p.y=-10;
+      p.x=Math.random()*W;
+    }
+
+    ctx.save();
+    ctx.fillStyle=p.c;
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.a*Math.PI/180);
+    ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6);
+    ctx.restore();
+  });
+
+  rafId=requestAnimationFrame(draw);
+}
+
+document.getElementById('confettiBtn').addEventListener('click',()=>{
+  createConfetti();
+  cancelAnimationFrame(rafId);
+  draw();
+  setTimeout(()=>cancelAnimationFrame(rafId),5000);
+});
+</script>
+
+</body>
+</html>
